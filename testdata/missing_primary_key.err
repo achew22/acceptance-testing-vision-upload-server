@@ -1,0 +1,2 @@
+Error: Expected a UTF value for primary key but got no value
+Line: 2, Column: 22-23, Token: ""

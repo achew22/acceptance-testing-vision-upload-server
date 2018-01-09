@@ -1,0 +1,2 @@
+Date of measurement;Primary key;Family name;First name;Date of birth;ID;Location;Contact;Sphere [dpt] OD;Cylinder [dpt] OD;Axis [°] OD;Pupil size [mm] OD;Sphere [dpt] OS;Cylinder[dpt] OS;Axis [°] OS;Pupil size [mm] OS;Gaze asymmetry [°] OS;Pupil distance [mm];Monocular {1=OD, 2=OS, 3=Binocular};Screening result {0=Pass, 1=Refer, 2=Refer or try again};
+2013-10-11T19:46:59Z;1;Anderson;;2016-12-03;1;;;1;1;1;1;1;1;1;1;1;1;1;1

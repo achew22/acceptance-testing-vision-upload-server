@@ -1,0 +1,2 @@
+Error: strconv.ParseFloat: parsing "f": invalid syntax
+Line: 2, Column: 49-51, Token: "f"
