@@ -27,6 +27,8 @@ EOF
   exit 1
 fi
 
+mkdir certs
+
 openssl req \
   -newkey rsa:2048 \
   -nodes \

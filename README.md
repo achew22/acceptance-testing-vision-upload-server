@@ -3,6 +3,27 @@
 This simulator demonstrates the interface I would like to set up to upload
 individual vision screening results to a centralized database.
 
+## Instructions
+
+How to use the server.
+
+1.  Follow the Go [instructions](https://golang.org/doc/install#install) to
+    install a local development environment.
+1.  Follow the instructions in [Test your
+    installation](https://golang.org/doc/install#testing) to set your `$GOPATH`
+    and compile your first hello world application.
+1.  Download this repo's sourcecode with
+    `go get github.com/achew22/acceptance-testing-vision-upload-server/cmd`
+1.  `cd` into the root of this repo which should be located at
+    `$GOPATH/src/github.com/achew22/acceptance-testing-vision-upload-server`
+1.  Generate the required keys for testing with `bash generate_cert.sh`.
+1.  Run the testing server with `go run ./cmd/main.go`
+
+Success! You now have a working testing server running. You can upload sample
+data to it by running `bash testdata/run.sh` and uploading any of the sample
+files available in `testdata`. For example, to see a working upload, you can
+run `bash testdata/run.sh testdata/good.in`.
+
 ## Caveats
 
 In this section I attempt to surface all the places where there are known
