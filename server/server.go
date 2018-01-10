@@ -57,6 +57,16 @@ func New(l *log.Logger, port int) *Server {
 	}
 }
 
+func (s *Server) renderData(rw http.ResponseWriter, r *http.Request) {
+	out := ""
+	for _, d := range s.d {
+		out += fmt.Sprintf("%v\n", d)
+	}
+
+	rw.Header().Add("content-type", "text/plain; charset=utf-8")
+	rw.Write([]byte(out))
+}
+
 func (s *Server) handleUpload(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		rw.WriteHeader(http.StatusMethodNotAllowed)
@@ -96,6 +106,7 @@ func (s *Server) Run() {
 	})
 
 	mux.HandleFunc("/v1/camera/upload", s.handleUpload)
+	mux.HandleFunc("/data", s.renderData)
 
 	cfg := &tls.Config{
 		MinVersion:               tls.VersionTLS12,
