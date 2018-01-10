@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"bytes"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
@@ -31,7 +32,7 @@ func TestParseZoo(t *testing.T) {
 			}
 
 			var out, suffix string
-			parsedOutput, err := parser.Parse(in)
+			parsedOutput, err := parser.Parse(bytes.NewBuffer(in))
 			if err != nil {
 				suffix = ".err"
 
@@ -52,6 +53,8 @@ func TestParseZoo(t *testing.T) {
 
 			if out != string(expectedOut) {
 				t.Errorf("\nGot:  \"%s\"\nWant: \"%s\"", out, expectedOut)
+				// Useful for debugging whitespace issues.
+				//t.Errorf("\nGot:  \"%v\"\nWant: \"%v\"", []byte(out), []byte(expectedOut))
 			}
 		})
 	}

@@ -2,9 +2,8 @@ package parser
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
-	"os"
+	"io"
 	"strconv"
 	"strings"
 	"time"
@@ -183,11 +182,10 @@ func parseHeader(s *bufio.Scanner) error {
 
 		if val := s.Text(); val != header {
 			// Error condition
-			fmt.Printf("Failure. Expected [%s] to equal [%s]", val, header)
-			os.Exit(1)
+			return fmt.Errorf("Screening data header doesn't match v1 definition. Expected [%s] to equal [%s]", val, header)
 		}
 		if !s.Scan() {
-			fmt.Printf("Failed to continue parsing the file")
+			return fmt.Errorf("Failed to continue parsing the file")
 		}
 	}
 	return nil
@@ -419,9 +417,8 @@ func parseDataRow(s *bufio.Scanner) (*DataRow, error) {
 	}, nil
 }
 
-func Parse(in []byte) ([]*DataRow, error) {
-	b := bytes.NewBuffer(in)
-	s := bufio.NewScanner(b)
+func Parse(in io.Reader) ([]*DataRow, error) {
+	s := bufio.NewScanner(in)
 
 	line := 1
 	columnEnd := 1
@@ -444,9 +441,13 @@ func Parse(in []byte) ([]*DataRow, error) {
 		return 0, data, bufio.ErrFinalToken
 	})
 
-	parseHeader(s)
-
 	rows := []*DataRow{}
+
+	err := parseHeader(s)
+	if err != nil {
+		return rows, fmt.Errorf("%s\nLine: %v, Column: %v-%v\n", err, line, columnEnd-tokenSize, columnEnd)
+	}
+
 	for {
 		row, err := parseDataRow(s)
 		if err != nil {

@@ -5,5 +5,5 @@
 curl \
   -vvv \
   --insecure \
-  --data-ascii 1.csv \
+  --data-binary "@$1" \
   "https://localhost:9000/v1/camera/upload?deviceId=12345678901234567890"

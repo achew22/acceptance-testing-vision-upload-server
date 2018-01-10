@@ -18,10 +18,13 @@ package server
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/achew22/acceptance-testing-vision-upload-server/parser"
 )
 
 var path = ""
@@ -32,8 +35,18 @@ func init() {
 		os.Getenv("GOPATH"))
 }
 
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"error"`
+}
+
+type Message struct {
+	Message string `json:"message"`
+}
+
 type Server struct {
 	l    *log.Logger
+	d    []*parser.DataRow
 	port int
 }
 
@@ -42,6 +55,32 @@ func New(l *log.Logger, port int) *Server {
 		l:    l,
 		port: port,
 	}
+}
+
+func (s *Server) handleUpload(rw http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		rw.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	d, err := parser.Parse(r.Body)
+	if err != nil {
+		msg, _ := json.Marshal(Error{
+			Code:    1,
+			Message: err.Error(),
+		})
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write(msg)
+		return
+	}
+
+	s.d = append(s.d, d...)
+
+	msg, _ := json.Marshal(Message{
+		Message: "Success. Your results are now available at https://localhost:9000/data",
+	})
+	rw.WriteHeader(http.StatusOK)
+	rw.Write(msg)
 }
 
 func (s *Server) Run() {
@@ -55,6 +94,8 @@ func (s *Server) Run() {
 	mux.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		rw.Write([]byte("Hello world"))
 	})
+
+	mux.HandleFunc("/v1/camera/upload", s.handleUpload)
 
 	cfg := &tls.Config{
 		MinVersion:               tls.VersionTLS12,
